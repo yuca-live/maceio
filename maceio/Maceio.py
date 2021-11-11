@@ -7,17 +7,16 @@ import json
 class Maceio():
     """
     Maceió
-    Está é a classe Maceió. Focada em construir tabelas SQL baseadas em um formato JSON. O nome dado foi em homenagem ao primeiro imóvel da Yuca, empresa onde a lib foi desenvolvida pelo time de Data.
+    This is the Maceio class. Focused on building SQL tables based on a JSON format. The name was given in honor of Yuca's first property, the company where the lib was developed by the Data team.
     """
-
 
     def __init__(self, engineText, schema, echo=False):
         """
-        Método construtor
+        Constructor method
 
-        :engineText: URI de conexão ao banco. Por enquanto temos suporte 100% ao PostgreSQL, outros bancos podem não performar bem quando houver conflito em inserções e para campos do tipo JSON.
-        :schema: Nome do schema que será usado.
-        :echo: Parâmetro que exibirá um log do sql no terminal, caso seja passado True.
+        :engineText: Database connection URI. For now we have 100% support for PostgreSQL, other databases may not perform well when there is conflict in inserts and for JSON type fields.
+        :schema: Name of the schema that will be used.
+        :echo: Parameter that will display a sql log in the terminal, if True.
         :return: void
         """
 
@@ -37,12 +36,15 @@ class Maceio():
 
     def save(self, table, data, conflicts=(), verify=True):
         """
-        Método que salva os dados no banco
+        Method that saves data to the database.
 
-        :table: nome da tabela do banco de dados
-        :data: dicionário que contém os dados que devem ser inseridos.
+        :table: Database table name.
+        :data: String with a json inside or a dictionary.
         :return: void
         """
+        if isinstance(data, str):
+            data = json.loads(data)
+
         elements = []
 
         if isinstance(data, list):
@@ -58,10 +60,10 @@ class Maceio():
 
     def __insert(self, table, data, name_index_unique):
         """
-        Método que insere ou atualiza dados na base.
+        Method that inserts or updates data in the database.
 
-        :table: Objeto que gerou a tabela
-        :data: tupla que contém os dados que devem ser inseridos.
+        :table: Object that generated the table.
+        :data: Tuple containing the data to be entered.
         :return: void
         """
         try:
@@ -79,10 +81,10 @@ class Maceio():
 
     def __generateUpdateConflicts(self, data, insert_stmt):
         """
-        Método que cria o dicionário que terá todos os campos para serem atualizados caso haja conflito no insert.
+        Method that creates the dictionary that will have all fields to be updated in case there is a conflict in the insert.
 
-        :data: Dicionário com os dados de insert. Apenas a posição 1 do dicionário
-        :insert_stmt: Instância do insert que é necessária no sqlalchemy para criarmos o excluded
+        :data: Dictionary with insert data. Dictionary position 1 only.
+        :insert_stmt: Insert instance that is needed in sqlalchemy to create the excluded.
         :return: dict
         """
         updateFields = {}
@@ -94,13 +96,12 @@ class Maceio():
 
     def __addTable(self, table, columns, conflicts, verify=True):
         """
-        Método que cria uma tabela dinâmica no banco
+        Method that creates a pivot table in the database.
 
-        :table: nome da tabela do banco de dados
-        :columns: uma tupla contendo todas as colunas no formato do sqlalchemy
+        :table: Database table name.
+        :columns: A tuple containing all columns in sqlalchemy format.
         :return: object
         """
-
         columns += (Column('extracted_at', DateTime(timezone=True), server_default=func.now()), Column('extract_updatet_at', DateTime(timezone=True), onupdate=func.now()))
 
         name_index_unique = None
@@ -117,9 +118,9 @@ class Maceio():
 
     def __generateColumnsAndData(self, data, nodes=3, level=1, parentName=None):
         """
-        Método que gera as colunas que serão criadas no banco de dados.
+        Method that generates the columns that will be created in the database.
 
-        :data: dicionário que contém os dados que devem ser inseridos.
+        :data: Dictionary that contains the data that must be entered.
         :return: tuple
         """
         columns, dataDict = [], {}

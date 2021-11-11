@@ -1,1 +1,1 @@
-from Maceio import Maceio
+from Maceio.Maceio import Maceio
