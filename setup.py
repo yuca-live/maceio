@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(name='Maceio',
-      version='0.0.1',
-      url='git clone https://github.com/tiagosilvayuca/maceio',
+      version='0.0.3',
+      url='https://github.com/yuca-live/maceio',
       license='MIT License',
       author='Yuca Live',
       long_description=readme,
@@ -13,5 +13,5 @@ setup(name='Maceio',
       author_email='time-data@gmail.com',
       keywords='Package, SQL, Json',
       description=u'Pacote para converter dados json para sql',
-      packages=['maceio'],
+      packages=['Maceio'],
       install_requires=['sqlalchemy'],)

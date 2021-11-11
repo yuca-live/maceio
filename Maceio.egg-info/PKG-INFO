@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: Maceio
+Version: 0.0.3
+Summary: Pacote para converter dados json para sql
+Home-page: https://github.com/yuca-live/maceio
+Author: Yuca Live
+Author-email: time-data@gmail.com
+License: MIT License
+Keywords: Package,SQL,Json
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# MACEIÓ
+Package to insert JSON data in SQL database.
+
+## Features
+- Create a new table based a json structure
+- Insert a new line or update in table;
+
+
