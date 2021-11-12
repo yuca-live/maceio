@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(name='Maceio',
-      version='0.0.11',
+      version='0.0.13',
       url='https://github.com/yuca-live/maceio',
       license='MIT License',
       author='Yuca Live',

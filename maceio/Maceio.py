@@ -46,7 +46,7 @@ class Maceio():
         if isinstance(data, str):
             data = json.loads(data)
 
-        elements = []
+        columns, elements = [], []
 
         if isinstance(data, list):
             for item in data:
@@ -56,7 +56,10 @@ class Maceio():
             columns, element = self.__generateColumnsAndData(data)
             elements.append(element)
 
-        table, name_index_unique = self.__addTable(table, columns, conflicts, verify)
+        try:
+            table, name_index_unique = self.__addTable(table, columns, conflicts, verify)
+        except Exception as e:
+            print(f"6 - {e}")
 
         self.__insert(table, elements, name_index_unique)
 
@@ -113,8 +116,10 @@ class Maceio():
             columns += (UniqueConstraint(*conflicts,
                         name=f'{name_index_unique}'),)
 
-        table = Table(table, self.meta, Column(
-            'id', BigInteger, primary_key=True), *columns)
+        try:
+            table = Table(table, self.meta, Column('id', BigInteger, primary_key=True), *columns)
+        except Exception as e:
+            print(f'3 - {e}')
 
         if verify:
             self.meta.create_all(self.engine, checkfirst=True)
@@ -150,15 +155,15 @@ class Maceio():
                         columns.append(Column(e[0], self.__type['dict']))
                         dataDict.update({name: json.loads(e[1])})
                     else:
-                        cols, datas = self.__generateColumnsAndData(
-                            e[1], nodes, level + 1, name)
-                        columns += cols
+                        cols, datas = self.__generateColumnsAndData(e[1], nodes, level + 1, name)
+                        columns += cols     
+
                         dataDict.update(datas)
                 else:
                     columns.append(Column(e[0], self.__type['dict']))
                     dataDict.update({name: json.loads(e[1])})
             else:
-                columns.append(Column(name, self.__type[type(e[1]).__name__]))
+                columns.append(Column(name, self.__type[type(e[1]).__name__]))     
                 dataDict.update({name: e[1]})
 
         return tuple(columns), dataDict
