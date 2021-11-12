@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 import json
 
+
 class Maceio():
     """
     Maceió
@@ -56,6 +57,7 @@ class Maceio():
             elements.append(element)
 
         table, name_index_unique = self.__addTable(table, columns, conflicts, verify)
+
         self.__insert(table, elements, name_index_unique)
 
     def __insert(self, table, data, name_index_unique):
@@ -91,7 +93,7 @@ class Maceio():
 
         for key in data.keys():
             updateFields.update({key: insert_stmt.excluded[key]})
-        
+
         return updateFields
 
     def __addTable(self, table, columns, conflicts, verify=True):
@@ -102,24 +104,29 @@ class Maceio():
         :columns: A tuple containing all columns in sqlalchemy format.
         :return: object
         """
-        columns += (Column('extracted_at', DateTime(timezone=True), server_default=func.now()), Column('extract_updatet_at', DateTime(timezone=True), onupdate=func.now()))
+        columns += (Column('extracted_at', DateTime(timezone=True), server_default=func.now()),
+                    Column('extract_updatet_at', DateTime(timezone=True), onupdate=func.now()))
 
         name_index_unique = None
         if len(conflicts) > 0:
             name_index_unique = f'uix_{table}_{"_".join(conflicts)}'
-            columns += (UniqueConstraint(*conflicts, name=f'{name_index_unique}'),)
+            columns += (UniqueConstraint(*conflicts,
+                        name=f'{name_index_unique}'),)
 
-        table = Table(table, self.meta, Column('id', BigInteger, primary_key=True), *columns)
+        table = Table(table, self.meta, Column(
+            'id', BigInteger, primary_key=True), *columns)
 
         if verify:
             self.meta.create_all(self.engine, checkfirst=True)
-        
+
         return table, name_index_unique
 
     def __testJson(self, value):
         try:
-            json.loads(value)
-            return True
+            if(('{' in value and '}' in value) or ('[' in value and ']' in value)):
+                json.loads(value)
+                return True
+            return False
         except:
             return False
 
@@ -141,9 +148,10 @@ class Maceio():
                 if level <= nodes:
                     if self.__testJson(e[1]):
                         columns.append(Column(e[0], self.__type['dict']))
-                        dataDict.update({name:json.loads(e[1])})
+                        dataDict.update({name: json.loads(e[1])})
                     else:
-                        cols, datas = self.__generateColumnsAndData(e[1], nodes, level + 1, name)
+                        cols, datas = self.__generateColumnsAndData(
+                            e[1], nodes, level + 1, name)
                         columns += cols
                         dataDict.update(datas)
                 else:
