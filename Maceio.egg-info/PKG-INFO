@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: Maceio
-Version: 0.0.9
+Version: 0.0.11
 Summary: Package to insert JSON data in SQL database.
 Home-page: https://github.com/yuca-live/maceio
 Author: Yuca Live

@@ -29,7 +29,7 @@ class Maceio():
             'int': Integer,
             'float': Float,
             'bool': Boolean,
-            'dict': JSON if 'psql' in engineText else Text,
+            'dict': JSON if 'postgresql' in engineText else Text,
             'tuple': Text,
             'list': Text,
         }
@@ -116,6 +116,13 @@ class Maceio():
         
         return table, name_index_unique
 
+    def __testJson(self, value):
+        try:
+            json.loads(value)
+            return True
+        except:
+            return False
+
     def __generateColumnsAndData(self, data, nodes=3, level=1, parentName=None):
         """
         Method that generates the columns that will be created in the database.
@@ -130,14 +137,18 @@ class Maceio():
             else:
                 name = f'{parentName}_{e[0]}'
 
-            if type(e[1]).__name__ == 'dict':
+            if type(e[1]).__name__ == 'dict' or self.__testJson(e[1]):
                 if level <= nodes:
-                    cols, datas = self.__generateColumnsAndData(e[1], nodes, level + 1, name)
-                    columns += cols
-                    dataDict.update(datas)
+                    if self.__testJson(e[1]):
+                        columns.append(Column(e[0], self.__type['dict']))
+                        dataDict.update({name:json.loads(e[1])})
+                    else:
+                        cols, datas = self.__generateColumnsAndData(e[1], nodes, level + 1, name)
+                        columns += cols
+                        dataDict.update(datas)
                 else:
-                    columns.append(Column(e[0], self.__type['str']))
-                    dataDict.update({name:json.dumps(e[1])})
+                    columns.append(Column(e[0], self.__type['dict']))
+                    dataDict.update({name: json.loads(e[1])})
             else:
                 columns.append(Column(name, self.__type[type(e[1]).__name__]))
                 dataDict.update({name: e[1]})
