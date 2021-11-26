@@ -1,9 +1,0 @@
-README.md
-setup.py
-Maceio/Maceio.py
-Maceio/__init__.py
-Maceio.egg-info/PKG-INFO
-Maceio.egg-info/SOURCES.txt
-Maceio.egg-info/dependency_links.txt
-Maceio.egg-info/requires.txt
-Maceio.egg-info/top_level.txt
